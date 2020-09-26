@@ -2,12 +2,11 @@ import pygame
 from pygame.draw import *
 
 pygame.init()
-
 FPS = 30
 screen = pygame.display.set_mode((400, 400))
 
-x1 = 100;
-y1 = 100
+x1 = 700;
+y1 = 700
 x2 = 300;
 y2 = 200
 N = 10
