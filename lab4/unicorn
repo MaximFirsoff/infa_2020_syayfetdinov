@@ -1,0 +1,121 @@
+import pygame.font
+from pygame.draw import *
+
+pygame.init()
+
+FPS = 30
+screen = pygame.display.set_mode((600, 700))
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (125, 125, 125)
+LIGHT_BLUE = (64, 128, 255)
+GREEN = (0, 200, 64)
+YELLOW = (255, 255, 0)
+BLUE = (50, 170, 205)
+
+PINK = (255, 50, 255)
+RED = (255, 0, 0)
+BLUE_GREEN = (0, 255, 100)
+marroon = (115, 0, 0)
+LIME = (230, 255, 100)
+PINK = (255, 100, 180)
+PURPLE = (240, 0, 255)
+gray = (127, 127, 127)
+MAGENTA = (255, 0, 230)
+brown = (100, 40, 0)
+FOREST_GREEN = (0, 50, 0)
+navy_blue = (0, 0, 100)
+rust = (210, 150, 75)
+dandilion_yellow = (255, 200, 0)
+highlighter = (255, 255, 100)
+SKY_BLUE = (0, 255, 255)
+light_gray = (200, 200, 200)
+dark_gray = (50, 50, 50)
+tan = (230, 220, 170)
+coffee_brown = (200, 190, 140)
+moon_glow = (235, 245, 255)
+
+currentColor = (145, 254, 222)
+
+rect(screen, SKY_BLUE, (0, 0, 600, 250))
+rect(screen, BLUE_GREEN, (0, 250, 600, 450))
+circle(screen, (255,204,0), (550, 60), 120)
+
+
+ellipse(screen, WHITE, (430, 362, 61, 115))
+circle(screen, WHITE, (472, 352), 37)
+circle(screen, WHITE, (517, 364), 19)
+polygon(screen, (250, 255, 220), [(485, 316), (523, 346), (517, 363), (485, 316)])
+circle(screen, WHITE, (450, 473), 50)
+rect(screen, WHITE, (332, 434, 118, 77))
+circle(screen, WHITE, (345, 478), 44)
+ellipse(screen, WHITE, (308, 481, 46, 86))
+circle(screen, WHITE, (323, 568), 16)
+rect(screen, WHITE, (309, 570, 30, 44))
+rect(screen, (241, 240, 0), (308, 592, 33, 24))
+ellipse(screen, WHITE, (441, 484, 40, 87))
+circle(screen, WHITE, (467, 571), 15)
+rect(screen, WHITE, (453, 578, 28, 37))
+rect(screen, (240, 240, 0), (451, 591, 32, 25))
+circle(screen, MAGENTA, (486, 341), 13)
+circle(screen, BLACK, (487, 341), 7)
+circle(screen, (250, 250, 250), (485, 338), 2)
+
+
+pi = 3.14159
+ellipse(screen, dandilion_yellow, (417, 298, 47, 25))
+ellipse(screen, dandilion_yellow, (405, 327, 35, 107))
+arc(screen, YELLOW, (429, 319, 20, 70), 3*pi/10, 16.5*pi/10, 7)
+arc(screen, PINK, (404, 330, 25, 70), pi/2, 125*pi/100, 8)
+arc(screen, MAGENTA, (404, 335, 20, 73), pi/2, 13.5*pi/10, 8)
+arc(screen, rust, (384, 357, 30, 59), -6*pi/10, 1*pi/10, 7)
+arc(screen, BLUE, (433, 366, 35, 59), 1.1*pi, 1.58*pi, 8)
+arc(screen, PINK, (409, 380, 30, 59), -4.*pi/10, 2*pi/10, 6)
+arc(screen, (255, 200, 0), (437, 321, 20, 50), 4.5*pi/10, 14*pi/10, 6)
+
+arc(screen, YELLOW, (389, 370, 30, 64), -7*pi/10, 2*pi/10, 10)
+arc(screen, RED, (401, 375, 30, 54), -7*pi/10, 2*pi/10, 9)
+arc(screen, RED, (418, 310, 35, 110), 3*pi/8, 12*pi/10, 10)
+arc(screen, PINK, (411, 301, 46, 77), 5.6*pi/10, 1.13*pi, 9)
+
+polygon(screen, (50, 50, 0), [(463, 314), (485, 256), (484, 318), (463, 314)])
+polygon(screen, LIME, [(464, 316), (484, 263), (483, 318), (464, 316)])
+
+arc(screen, PINK, (440, 296, 56, 32), 0.25*pi, 1.2*pi, 7)
+arc(screen, dandilion_yellow, (448, 310, 56, 26), 0.35*pi, 1*pi, 7)
+arc(screen, RED, (448, 301, 50, 26), 0.35*pi, 0.9*pi, 8)
+arc(screen, (50,230,70), (441, 303, 56, 26), 0.7*pi, pi, 8)
+arc(screen, PINK, (480, 284, 40, 26), 1.2*pi, 1.91*pi, 4)
+arc(screen, YELLOW, (480, 289, 50, 26), 1.2*pi, 1.81*pi, 6)
+arc(screen, rust, (482, 297, 60, 26), 1.0*pi, 1.5*pi, 6)
+
+polygon(screen, (20, 50, 70), [(459, 321), (438, 304), (436, 308), (445, 338), (459, 321)])
+polygon(screen, (255, 255, 200), [(459, 323), (439, 306), (437, 308), (446, 337), (459, 323)])
+
+ellipse(screen, dandilion_yellow, (280, 443, 40, 25))
+ellipse(screen, BLUE, (265, 466, 35, 107))
+arc(screen, YELLOW, (289, 464, 20, 70), 3*pi/10, 16.5*pi/10, 7)
+arc(screen, PINK, (264, 475, 25, 70), 0.5*pi, 125*pi/100, 7)
+arc(screen, MAGENTA, (264, 480, 20, 73), 0.1*pi, 13.5*pi/10, 8)
+arc(screen, rust, (244, 502, 30, 59), -6*pi/10, 1*pi/10, 7)
+arc(screen, BLUE, (293, 511, 35, 59), 1.1*pi, 1.58*pi, 8)
+arc(screen, PINK, (269, 525, 30, 59), -4.*pi/10, 2*pi/10, 6)
+arc(screen, YELLOW, (249, 515, 30, 64), -7*pi/10, 2*pi/10, 10)
+arc(screen, RED, (261, 520, 30, 54), -7*pi/10, 4*pi/10, 9)
+arc(screen, RED, (268, 455, 35, 110), 3*pi/8, 12*pi/10, 10)
+arc(screen, dandilion_yellow, (276, 456, 38, 134), 0.6*pi, 1.1*pi, 9)
+arc(screen, PINK, (261, 446, 46, 77), 0.4*pi, 1.13*pi, 9)
+
+
+pygame.display.update()
+clock = pygame.time.Clock()
+finished = False
+
+while not finished:
+    clock.tick(FPS)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished = True
+
+pygame.quit()
