@@ -10,13 +10,13 @@ y1 = 700
 x2 = 300;
 y2 = 200
 N = 10
-color = (255, 255, 255)
-rect(screen, color, (x1, y1, x2 - x1, y2 - y1), 2)
+color_1 = (255, 255, 255)
+rect(screen, color_1, (x1, y1, x2 - x1, y2 - y1), 2)
 h = (x2 - x1) // (N + 1)
-x = x1 + h
+x_1 = x1 + h
 for i in range(N):
-    line(screen, color, (x, y1), (x, y2))
-    x += h
+    line(screen, color_1, (x_1, y1), (x_1, y2))
+    x_1 += h
 
 pygame.display.update()
 clock = pygame.time.Clock()

@@ -5,7 +5,6 @@ pygame.init()
 
 FPS = 30
 screen = pygame.display.set_mode((800, 600))
-plane = pygame.display.set_mode((800, 600))
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -20,7 +19,6 @@ RED = (255, 0, 0)
 BLUE_GREEN = (0, 255, 100)
 marroon = (115, 0, 0)
 LIME = (230, 255, 101)
-PINK = (255, 100, 180)
 PURPLE = (240, 0, 255)
 gray = (127, 127, 127)
 MAGENTA = (255, 0, 230)
@@ -41,6 +39,8 @@ currentColor = (145, 254, 222)
 
 
 def unicorn(x, y, scale):
+    plane = pygame.display.set_mode((800, 600), pygame.SRCALPHA, 32)
+    plane = plane.convert_alpha()
     ellipse(plane, WHITE, (430, 362, 61, 115))
     circle(plane, WHITE, (472, 352), 37)
     circle(plane, WHITE, (517, 364), 19)
@@ -102,8 +102,6 @@ def unicorn(x, y, scale):
     screen.blit(plane, (x, y))
 
 
-
-
 rect(screen, SKY_BLUE, (0, 0, 800, 250))
 rect(screen, BLUE_GREEN, (0, 250, 800, 450))
 circle(screen, (255, 204, 0), (650, 60), 120)
@@ -123,7 +121,8 @@ ellipse(screen, FOREST_GREEN, (70, 90, 70, 100))
 circle(screen, RED, (69, 200), 7)
 circle(screen, RED, (139, 350), 7)
 circle(screen, RED, (159, 240), 7)
-unicorn(0, 0, 0.1)
+unicorn(30, 0, 0.001)
+
 pygame.display.update()
 clock = pygame.time.Clock()
 finished = False
