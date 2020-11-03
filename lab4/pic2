@@ -1,136 +1,238 @@
-import pygame.font
-from pygame.draw import *
+import numpy as np
+import pygame
+import pygame.draw as pgd
+from random import randint
+from tkinter import Tk
+from tkinter.messagebox import showerror, showinfo
 
 pygame.init()
 
+X, Y = (1200, 900)
 FPS = 30
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((X, Y))
 
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAY = (125, 125, 125)
-LIGHT_BLUE = (64, 128, 255)
-GREEN = (0, 200, 64)
-YELLOW = (255, 255, 0)
-BLUE = (50, 170, 205)
+COLOR = {  # Словарь цветов
+    'Orange': (255, 178, 0),
+    'SkyBlue': (135, 206, 235),
+    'Pink': (255, 20, 147),
+    'Blue': (0, 0, 139),
+    'Red': (255, 0, 0),
+    'Maroon': (128, 0, 0),
+    'White': (255, 255, 255),
+    'Black': (0, 0, 0)}
 
-PINK = (255, 50, 255)
-RED = (255, 0, 0)
-BLUE_GREEN = (0, 255, 100)
-marroon = (115, 0, 0)
-LIME = (230, 255, 101)
-PURPLE = (240, 0, 255)
-gray = (127, 127, 127)
-MAGENTA = (255, 0, 230)
-brown = (100, 40, 0)
-FOREST_GREEN = (5, 100, 5)
-navy_blue = (0, 0, 100)
-rust = (210, 150, 75)
-dandilion_yellow = (255, 200, 0)
-highlighter = (255, 255, 100)
-SKY_BLUE = (0, 255, 255)
-light_gray = (200, 200, 200)
-dark_gray = (50, 50, 50)
-tan = (230, 220, 170)
-coffee_brown = (200, 190, 140)
-moon_glow = (235, 245, 255)
-
-currentColor = (145, 254, 222)
+_color_key = (  # служебный словарь целочисленных ключей к цветам
+    'Orange',
+    'SkyBlue',
+    'Pink',
+    'Blue',
+    'Red',
+    'Maroon',
+    'White',
+    'Black')
 
 
-def unicorn(x, y, scale):
-    plane = pygame.display.set_mode((800, 600), pygame.SRCALPHA, 32)
-    plane = plane.convert_alpha()
-    ellipse(plane, WHITE, (430, 362, 61, 115))
-    circle(plane, WHITE, (472, 352), 37)
-    circle(plane, WHITE, (517, 364), 19)
-    polygon(plane, (250, 255, 220), [(485, 316), (523, 346), (517, 363), (485, 316)])
-    circle(plane, WHITE, (450, 473), 50)
-    rect(plane, WHITE, (332, 434, 118, 77))
-    circle(plane, WHITE, (345, 478), 44)
-    ellipse(plane, WHITE, (308, 481, 46, 86))
-    circle(plane, WHITE, (323, 568), 16)
-    rect(plane, WHITE, (309, 570, 30, 44))
-    rect(plane, (241, 240, 0), (308, 592, 33, 24))
-    ellipse(plane, WHITE, (441, 484, 40, 87))
-    circle(plane, WHITE, (467, 571), 15)
-    rect(plane, WHITE, (453, 578, 28, 37))
-    rect(plane, (240, 240, 0), (451, 591, 32, 25))
-    circle(plane, MAGENTA, (486, 341), 13)
-    circle(plane, BLACK, (487, 341), 7)
-    circle(plane, (250, 250, 250), (485, 338), 2)
-    pi = 3.14159
-    ellipse(plane, dandilion_yellow, (417, 298, 47, 25))
-    ellipse(plane, dandilion_yellow, (405, 327, 35, 107))
-    arc(plane, YELLOW, (429, 319, 20, 70), 3 * pi / 10, 16.5 * pi / 10, 7)
-    arc(plane, PINK, (404, 330, 25, 70), pi / 2, 125 * pi / 100, 8)
-    arc(plane, MAGENTA, (404, 335, 20, 73), pi / 2, 13.5 * pi / 10, 8)
-    arc(plane, rust, (384, 357, 30, 59), -6 * pi / 10, 1 * pi / 10, 7)
-    arc(plane, BLUE, (433, 366, 35, 59), 1.1 * pi, 1.58 * pi, 8)
-    arc(plane, PINK, (409, 380, 30, 59), -4. * pi / 10, 2 * pi / 10, 6)
-    arc(plane, (255, 200, 0), (437, 321, 20, 50), 4.5 * pi / 10, 14 * pi / 10, 6)
-    arc(plane, YELLOW, (389, 370, 30, 64), -7 * pi / 10, 2 * pi / 10, 10)
-    arc(plane, RED, (401, 375, 30, 54), -7 * pi / 10, 2 * pi / 10, 9)
-    arc(plane, RED, (418, 310, 35, 110), 3 * pi / 8, 12 * pi / 10, 10)
-    arc(plane, PINK, (411, 301, 46, 77), 5.6 * pi / 10, 1.13 * pi, 9)
-    polygon(plane, (50, 50, 0), [(463, 314), (485, 256), (484, 318), (463, 314)])
-    polygon(plane, LIME, [(464, 316), (484, 263), (483, 318), (464, 316)])
-    arc(plane, PINK, (440, 296, 56, 32), 0.25 * pi, 1.2 * pi, 7)
-    arc(plane, dandilion_yellow, (448, 310, 56, 26), 0.35 * pi, 1 * pi, 7)
-    arc(plane, RED, (448, 301, 50, 26), 0.35 * pi, 0.9 * pi, 8)
-    arc(plane, (50, 230, 70), (441, 303, 56, 26), 0.7 * pi, pi, 8)
-    arc(plane, PINK, (480, 284, 40, 26), 1.2 * pi, 1.91 * pi, 4)
-    arc(plane, YELLOW, (480, 289, 50, 26), 1.2 * pi, 1.81 * pi, 6)
-    arc(plane, rust, (482, 297, 60, 26), 1.0 * pi, 1.5 * pi, 6)
-    polygon(plane, (20, 50, 70), [(459, 321), (438, 304), (436, 308), (445, 338), (459, 321)])
-    polygon(plane, (255, 255, 200), [(459, 323), (439, 306), (437, 308), (446, 337), (459, 323)])
-    ellipse(plane, dandilion_yellow, (280, 443, 40, 25))
-    ellipse(plane, BLUE, (265, 466, 35, 107))
-    arc(plane, YELLOW, (289, 464, 20, 70), 3 * pi / 10, 16.5 * pi / 10, 7)
-    arc(plane, PINK, (264, 475, 25, 70), 0.5 * pi, 125 * pi / 100, 7)
-    arc(plane, MAGENTA, (264, 480, 20, 73), 0.1 * pi, 13.5 * pi / 10, 8)
-    arc(plane, rust, (244, 502, 30, 59), -6 * pi / 10, 1 * pi / 10, 7)
-    arc(plane, BLUE, (293, 511, 35, 59), 1.1 * pi, 1.58 * pi, 8)
-    arc(plane, PINK, (269, 525, 30, 59), -4. * pi / 10, 2 * pi / 10, 6)
-    arc(plane, YELLOW, (249, 515, 30, 64), -7 * pi / 10, 2 * pi / 10, 10)
-    arc(plane, RED, (261, 520, 30, 54), -7 * pi / 10, 4 * pi / 10, 9)
-    arc(plane, RED, (268, 455, 35, 110), 3 * pi / 8, 12 * pi / 10, 10)
-    arc(plane, dandilion_yellow, (276, 456, 38, 134), 0.6 * pi, 1.1 * pi, 9)
-    arc(plane, PINK, (261, 446, 46, 77), 0.4 * pi, 1.13 * pi, 9)
-
-    pygame.transform.scale(plane, (int(3000 * scale), int(800 * scale)))
-    screen.blit(plane, (x, y))
+def set_color(num: int):
+    '''
+    Возвращает цвет по номеру-ключу.
+    ----------------------------------------------------------
+    num - номер-ключ
+    '''
+    return COLOR[_color_key[num]]
 
 
-rect(screen, SKY_BLUE, (0, 0, 800, 250))
-rect(screen, BLUE_GREEN, (0, 250, 800, 450))
-circle(screen, (255, 204, 0), (650, 60), 120)
-ellipse(screen, FOREST_GREEN, (70, 410, 100, 70))
-polygon(screen, coffee_brown, [(80, 599), (130, 594), (105, 410), (92, 410)])
-ellipse(screen, FOREST_GREEN, (3, 380, 120, 80))
-ellipse(screen, FOREST_GREEN, (30, 320, 180, 120))
-ellipse(screen, FOREST_GREEN, (10, 280, 100, 70))
-ellipse(screen, FOREST_GREEN, (40, 240, 150, 100))
-ellipse(screen, FOREST_GREEN, (142, 276, 67, 44))
-ellipse(screen, FOREST_GREEN, (59, 140, 98, 135))
-ellipse(screen, FOREST_GREEN, (100, 190, 80, 105))
-ellipse(screen, FOREST_GREEN, (25, 175, 70, 140))
-ellipse(screen, FOREST_GREEN, (29, 160, 50, 40))
-ellipse(screen, FOREST_GREEN, (97, 120, 80, 60))
-ellipse(screen, FOREST_GREEN, (70, 90, 70, 100))
-circle(screen, RED, (69, 200), 7)
-circle(screen, RED, (139, 350), 7)
-circle(screen, RED, (159, 240), 7)
-unicorn(30, 0, 0.001)
+def rand_sign():
+    '''
+    С равной вероятностью возвращает 1 или -1.
+    '''
+    return (-1) ** randint(0, 1)
 
-pygame.display.update()
-clock = pygame.time.Clock()
-finished = False
 
-while not finished:
-    clock.tick(FPS)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            finished = True
+def kenny_figure(surface, color, X0, R, angles):
+    '''
+    Рисует правильный многоугольник с заданными количеством углов, цветом и расстоянием от
+    центра до вершины на заданной поверхности.
+    ----------------------------------------------------------
+    surface - поверхность рисования
+    color - цвет
+    X0 - кортеж координат центра фигуры
+    R - расстояние от центра до вершин
+    angles - количество углов
+    '''
+    x0, y0 = X0
+    X = []
+    for i in range(angles):
+        x = R * np.exp(-1j * 2 * np.pi / angles * i).real
+        y = R * np.exp(-1j * 2 * np.pi / angles * i).imag
+        X.append([x + x0, y + y0])
+    pgd.polygon(surface, color, X)
 
-pygame.quit()
+
+class Ball():
+    '''
+    Класс цветных шариков, которые могут двигаться и отражаться от стенок.
+    '''
+
+    def __init__(self, surface, R: int, color: tuple, X0: tuple, V0: tuple, name: str = 'ball'):
+        '''
+        surface - поверхность рисования шарика
+        R - радиус шарика
+        color - цвет шарика
+        X0 - координаты шарика
+        V0 - скорости шарика
+        name - имя шарика
+        '''
+        self.surface = surface
+        self.R = R
+        self.color = color
+        self.X = np.array(X0)
+        self.V = np.array(V0)
+        self.name = name
+
+    def move(self, dt):
+        '''
+        Изменяет координаты шарика за указанный период времени исходя из его
+        положения и скорости.
+        ----------------------------------------------------------
+        dt - промежуток времени, в ходе которого движение линейно
+        '''
+        if self.X[0] + self.V[0] * dt >= X or self.X[0] + self.V[0] * dt <= 0:
+            self.V[0] = -self.V[0]
+            self.V[1] += rand_sign() * randint(0, 15)
+        if self.X[1] + self.V[1] * dt >= Y or self.X[1] + self.V[1] * dt <= 0:
+            self.V[1] = -self.V[1]
+            self.V[0] += rand_sign() * randint(0, 15)
+
+        self.X = self.X + self.V * dt
+
+    def show(self):
+        '''
+        Рисует шарик или многоугольник, если имя - Кенни.
+        '''
+        if self.name == 'Kenny':
+            kenny_figure(self.surface, self.color, self.X, self.R, 7)
+        else:
+            pgd.circle(self.surface, self.color, (int(self.X[0]), int(self.X[1])), self.R)
+
+
+class Balls():
+    '''
+    Класс групп шариков Ball, фактически обёртка для Ball, позволяющая коротко
+    реализовать множественность объектов Ball.
+    '''
+
+    def __init__(self, surface, balls: np.ndarray):
+        '''
+        surface - поверхность рисования шариков
+        balls - массив с объектами Ball
+        '''
+        self.balls = balls
+
+    def move(self, dt):
+        '''
+        Изменяет координаты шариков за указанный период времени исходя из их
+        положений и скоростей.
+        ----------------------------------------------------------
+        dt - промежуток времени, в ходе которого движение линейно
+        '''
+        for i in self.balls:
+            i.move(dt)
+
+    def show(self):
+        '''
+        Рисует каждый объект из balls
+        '''
+        for i in self.balls:
+            i.show()
+
+
+def init_balls(Number, R_max, kenny_chance=10):
+    '''
+    Создаёт массив с объектами balls со случайными параметрами, которые
+    можно ограничить.
+    ----------------------------------------------------------
+    Number - количество шариков
+    R_max - максимальный радиус шарика (минимальный - 5)
+    kenny_chance - обратная вероятность создания шарика с именем "Кенни"
+    '''
+    standart = Ball(screen, 20, COLOR['SkyBlue'], (600, 450), (20, 20), name='Lilith')
+
+    balls = np.array([standart])
+
+    for i in range(Number):
+        R = randint(5, R_max)
+        X0 = (randint(0, X), randint(0, Y))
+        V0 = (rand_sign() * randint(60, 250), rand_sign() * randint(60, 250))
+        if randint(0, kenny_chance) == 10:
+            balls = np.append(balls, Ball(screen, R, set_color(randint(0, len(COLOR) - 2)), X0, V0, name='Kenny'))
+        else:
+            balls = np.append(balls,
+                              Ball(screen, R, set_color(randint(0, len(COLOR) - 2)), X0, V0, name='ball {}'.format(i)))
+    balls = np.delete(balls, 0)
+    return balls
+
+
+def click(event, kit: Balls):
+    '''
+    Обрабатывает событие нажатия кнопки мыши, удаляя шарик, если на него
+    нажали и добавляя новый - случайный; возвращает количество набранных
+    очков.
+    ----------------------------------------------------------
+    event - событие pygame
+    kit - группа шариков Balls
+    '''
+    points = 0
+    x_m, y_m = event.pos
+    for i in kit.balls:
+        x, y = i.X
+        if (x - x_m) ** 2 + (y - y_m) ** 2 <= i.R ** 2:
+            if i.name == 'Kenny':
+                points += -5
+                root = Tk()
+                root.withdraw()
+                showerror(title="Господи, они убили Кенни!", message="Сволочи!")
+                root.destroy()
+            else:
+                points += 1
+            kit.balls = np.append(kit.balls, init_balls(1, 50))
+            pos = kit.balls.tolist().index(i)
+            kit.balls = np.delete(kit.balls, pos)
+            break
+    return points
+
+
+def insert(name, points):
+    '''
+    Записывает в файл Leader Board.txt результат игры и возвращает место
+    в рейтинге игроков.
+    ----------------------------------------------------------
+    name - имя игрока
+    points - счёт игрока
+    '''
+    file = open('Leader Board.txt', 'r')
+    M = np.array([], dtype=str)
+    scores = np.array([], dtype=int)
+    for s in file:
+        M = np.append(M, s)
+        num = ''
+        for sym in s:
+            try:
+                num += str(int(sym))
+            except ValueError:
+                continue
+        scores = np.append(scores, int(num))
+    file.close()
+
+    pos = 0
+    for i in range(np.size(scores)):
+        if scores[i] <= points:
+            scores = np.insert(scores, i, points)
+            pos = i
+            break;
+    newstr = '{} :: {} \n'.format(name, points)
+    M = np.insert(M, pos, newstr)
+    print(M)
+
+    file = open('Leader Board.txt', 'w')
+    file.writelines(M)
+    return pos + 1
