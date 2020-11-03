@@ -1,141 +1,238 @@
-rom tkinter import *
-from random import randrange as rnd, choice
+import numpy as np
+import pygame
+import pygame.draw as pgd
+from random import randint
+from tkinter import Tk
+from tkinter.messagebox import showerror, showinfo
 
-root = Tk()
-root.geometry('800x600')
-# Create window with size 800x600 pixels.
-canv = Canvas(root, bg='white')
-# Create active window with white background.
-canv.pack(fill=BOTH, expand=1)
-# Make active window have the same size with window.
-# For counting points.
-points = 0
-x_1 = 7 * [0]
-y_1 = 7 * [0]
-vx = 7 * [0]
-vy = 7 * [0]
-xs = 7 * [0]
-ys = 7 * [0]
-vxs = 7 * [0]
-vys = 7 * [0]
-r_1 = 7 * [0]
-a = 7 * [0]
-ball = 7 * [0]
-square = 7 * [0]
-colors = [
-    'red',
-    'orange',
-    'yellow',
-    'green',
-    'blue'
-]
+pygame.init()
 
+X, Y = (1200, 900)
+FPS = 30
+screen = pygame.display.set_mode((X, Y))
 
-# Create massive with ball's colors.
+COLOR = {  # Словарь цветов
+    'Orange': (255, 178, 0),
+    'SkyBlue': (135, 206, 235),
+    'Pink': (255, 20, 147),
+    'Blue': (0, 0, 139),
+    'Red': (255, 0, 0),
+    'Maroon': (128, 0, 0),
+    'White': (255, 255, 255),
+    'Black': (0, 0, 0)}
 
-def move_ball():
-    global x_1, y_1, vx, vy
-    for i in range(7):
-        canv.move(ball[i], vx[i], vy[i])
-        x[i] = x[i] + vx[i]
-        y[i] = y[i] + vy[i]
-        if x[i] <= r_1[i] or x[i] >= 800 - r_1[i]:
-            vx[i] = - vx[i]
-        if y[i] <= r_1[i] or y[i] >= 600 - r_1[i]:
-            vy[i] = - vy[i]
-    root.after(int(1000 / 24), move_ball)
+_color_key = (  # служебный словарь целочисленных ключей к цветам
+    'Orange',
+    'SkyBlue',
+    'Pink',
+    'Blue',
+    'Red',
+    'Maroon',
+    'White',
+    'Black')
 
 
-# Create a function, which moves ball.
-
-def new_ball():
-    global ball, x_1, y_1, r_1, vx, vy
-    for i in range(7):
-        canv.delete(ball[i])
-    for i in range(7):
-        r[i] = rnd(30, 50)
-        x[i] = rnd(100 - r[i], 800 - r[i])
-        y[i] = rnd(100 - r[i], 600 - r[i])
-        ball[i] = canv.create_oval(x[i] - r[i], y[i] - r[i],
-                                   x[i] + r[i], y[i] + r[i],
-                                   outline=choice(colors),
-                                   fill=choice(colors),
-                                   width=5, tag='ball[i]')
-        vx[i] = rnd(-10, 10)
-        vy[i] = rnd(-10, 10)
-    root.after(2000, new_ball)
+def set_color(num: int):
+    '''
+    Возвращает цвет по номеру-ключу.
+    ----------------------------------------------------------
+    num - номер-ключ
+    '''
+    return COLOR[_color_key[num]]
 
 
-# Create ball.
-
-def move_square():
-    global xs, ys, vxs, vys
-    for i in range(7):
-        canv.move(square[i], vxs[i], vys[i])
-        xs[i] = xs[i] + vxs[i]
-        ys[i] = ys[i] + vys[i]
-        if xs[i] <= a[i] or xs[i] >= 800 - a[i]:
-            vxs[i] = - vxs[i]
-        if ys[i] <= a[i] or ys[i] >= 600 - a[i]:
-            vys[i] = - vys[i]
-    root.after(int(1000 / 24), move_square)
+def rand_sign():
+    '''
+    С равной вероятностью возвращает 1 или -1.
+    '''
+    return (-1) ** randint(0, 1)
 
 
-# Create a function, which moves ball.
-
-def new_square():
-    global square, xs, ys, a, vxs, vys
-    for i in range(7):
-        canv.delete(square[i])
-    for i in range(7):
-        a[i] = rnd(30, 50)
-        xs[i] = rnd(100 - a[i], 800 - a[i])
-        ys[i] = rnd(100 - a[i], 600 - a[i])
-        square[i] = canv.create_rectangle(xs[i] - a[i] / 2, ys[i] - a[i] / 2,
-                                          xs[i] + a[i] / 2, ys[i] + a[i] / 2,
-                                          outline=choice(colors),
-                                          fill=choice(colors),
-                                          width=5, tag='square[i]')
-        vxs[i] = rnd(-10, 10)
-        vys[i] = rnd(-10, 10)
-    root.after(2000, new_square)
-
-
-# Create square.
-
-def click_ball(event):
-    global points, x_1, y_1
-    for i in range(7):
-        if ((event.x - x[i]) ** 2 +
-                (event.y - y[i]) ** 2) <= r_1[i] ** 2:
-            canv.delete(ball[i])
-            canv.delete('points')
-            points = points + 1
-            canv.create_text(50, 50, text=str(points),
-                             anchor=CENTER, font="Purisa",
-                             tag='points')
+def kenny_figure(surface, color, X0, R, angles):
+    '''
+    Рисует правильный многоугольник с заданными количеством углов, цветом и расстоянием от
+    центра до вершины на заданной поверхности.
+    ----------------------------------------------------------
+    surface - поверхность рисования
+    color - цвет
+    X0 - кортеж координат центра фигуры
+    R - расстояние от центра до вершин
+    angles - количество углов
+    '''
+    x0, y0 = X0
+    X = []
+    for i in range(angles):
+        x = R * np.exp(-1j * 2 * np.pi / angles * i).real
+        y = R * np.exp(-1j * 2 * np.pi / angles * i).imag
+        X.append([x + x0, y + y0])
+    pgd.polygon(surface, color, X)
 
 
-# Show points.
+class Ball():
+    '''
+    Класс цветных шариков, которые могут двигаться и отражаться от стенок.
+    '''
 
-def click_square(event):
-    global points, xs, ys
-    for i in range(7):
-        if ((event.x - xs[i]) ** 2 +
-                (event.y - ys[i]) ** 2) <= a[i] ** 2:
-            canv.delete(square[i])
-            canv.delete('points')
-            points = points + 2
-            canv.create_text(50, 50, text=str(points),
-                             anchor=CENTER, font="Purisa",
-                             tag='points')
+    def __init__(self, surface, R: int, color: tuple, X0: tuple, V0: tuple, name: str = 'ball'):
+        '''
+        surface - поверхность рисования шарика
+        R - радиус шарика
+        color - цвет шарика
+        X0 - координаты шарика
+        V0 - скорости шарика
+        name - имя шарика
+        '''
+        self.surface = surface
+        self.R = R
+        self.color = color
+        self.X = np.array(X0)
+        self.V = np.array(V0)
+        self.name = name
+
+    def move(self, dt):
+        '''
+        Изменяет координаты шарика за указанный период времени исходя из его
+        положения и скорости.
+        ----------------------------------------------------------
+        dt - промежуток времени, в ходе которого движение линейно
+        '''
+        if self.X[0] + self.V[0] * dt >= X or self.X[0] + self.V[0] * dt <= 0:
+            self.V[0] = -self.V[0]
+            self.V[1] += rand_sign() * randint(0, 15)
+        if self.X[1] + self.V[1] * dt >= Y or self.X[1] + self.V[1] * dt <= 0:
+            self.V[1] = -self.V[1]
+            self.V[0] += rand_sign() * randint(0, 15)
+
+        self.X = self.X + self.V * dt
+
+    def show(self):
+        '''
+        Рисует шарик или многоугольник, если имя - Кенни.
+        '''
+        if self.name == 'Kenny':
+            kenny_figure(self.surface, self.color, self.X, self.R, 7)
+        else:
+            pgd.circle(self.surface, self.color, (int(self.X[0]), int(self.X[1])), self.R)
 
 
-# Show points.
-new_ball()
-new_square()
-move_ball()
-move_square()
-canv.bind('<Button-3>', click_ball)
-canv.bind('<Button-1>', click_square)
-mainloop()
+class Balls():
+    '''
+    Класс групп шариков Ball, фактически обёртка для Ball, позволяющая коротко
+    реализовать множественность объектов Ball.
+    '''
+
+    def __init__(self, surface, balls: np.ndarray):
+        '''
+        surface - поверхность рисования шариков
+        balls - массив с объектами Ball
+        '''
+        self.balls = balls
+
+    def move(self, dt):
+        '''
+        Изменяет координаты шариков за указанный период времени исходя из их
+        положений и скоростей.
+        ----------------------------------------------------------
+        dt - промежуток времени, в ходе которого движение линейно
+        '''
+        for i in self.balls:
+            i.move(dt)
+
+    def show(self):
+        '''
+        Рисует каждый объект из balls
+        '''
+        for i in self.balls:
+            i.show()
+
+
+def init_balls(Number, R_max, kenny_chance=10):
+    '''
+    Создаёт массив с объектами balls со случайными параметрами, которые
+    можно ограничить.
+    ----------------------------------------------------------
+    Number - количество шариков
+    R_max - максимальный радиус шарика (минимальный - 5)
+    kenny_chance - обратная вероятность создания шарика с именем "Кенни"
+    '''
+    standart = Ball(screen, 20, COLOR['SkyBlue'], (600, 450), (20, 20), name='Lilith')
+
+    balls = np.array([standart])
+
+    for i in range(Number):
+        R = randint(5, R_max)
+        X0 = (randint(0, X), randint(0, Y))
+        V0 = (rand_sign() * randint(60, 250), rand_sign() * randint(60, 250))
+        if randint(0, kenny_chance) == 10:
+            balls = np.append(balls, Ball(screen, R, set_color(randint(0, len(COLOR) - 2)), X0, V0, name='Kenny'))
+        else:
+            balls = np.append(balls,
+                              Ball(screen, R, set_color(randint(0, len(COLOR) - 2)), X0, V0, name='ball {}'.format(i)))
+    balls = np.delete(balls, 0)
+    return balls
+
+
+def click(event, kit: Balls):
+    '''
+    Обрабатывает событие нажатия кнопки мыши, удаляя шарик, если на него
+    нажали и добавляя новый - случайный; возвращает количество набранных
+    очков.
+    ----------------------------------------------------------
+    event - событие pygame
+    kit - группа шариков Balls
+    '''
+    points = 0
+    x_m, y_m = event.pos
+    for i in kit.balls:
+        x, y = i.X
+        if (x - x_m) ** 2 + (y - y_m) ** 2 <= i.R ** 2:
+            if i.name == 'Kenny':
+                points += -5
+                root = Tk()
+                root.withdraw()
+                showerror(title="Господи, они убили Кенни!", message="Сволочи!")
+                root.destroy()
+            else:
+                points += 1
+            kit.balls = np.append(kit.balls, init_balls(1, 50))
+            pos = kit.balls.tolist().index(i)
+            kit.balls = np.delete(kit.balls, pos)
+            break
+    return points
+
+
+def insert(name, points):
+    '''
+    Записывает в файл Leader Board.txt результат игры и возвращает место
+    в рейтинге игроков.
+    ----------------------------------------------------------
+    name - имя игрока
+    points - счёт игрока
+    '''
+    file = open('Leader Board.txt', 'r')
+    M = np.array([], dtype=str)
+    scores = np.array([], dtype=int)
+    for s in file:
+        M = np.append(M, s)
+        num = ''
+        for sym in s:
+            try:
+                num += str(int(sym))
+            except ValueError:
+                continue
+        scores = np.append(scores, int(num))
+    file.close()
+
+    pos = 0
+    for i in range(np.size(scores)):
+        if scores[i] <= points:
+            scores = np.insert(scores, i, points)
+            pos = i
+            break;
+    newstr = '{} :: {} \n'.format(name, points)
+    M = np.insert(M, pos, newstr)
+    print(M)
+
+    file = open('Leader Board.txt', 'w')
+    file.writelines(M)
+    return pos + 1
